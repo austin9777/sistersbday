@@ -49,11 +49,9 @@ main{
   text-transform:uppercase;
   opacity:.7;
   display:flex;
-  justify-content:space-between;
+  justify-content:flex-end;
   align-items:baseline;
-  gap:16px;
 }
-.imprint b{font-weight:400;color:var(--lead);}
 
 .nameblock{
   position:relative;
@@ -82,6 +80,19 @@ main{
   text-transform:uppercase;
   margin-top:22px;
   opacity:.8;
+}
+
+/* the copy sits in an unprinted area of the sheet so the ink
+   never fights the words; feathered edges keep it off-grid */
+.copy{position:relative;}
+.copy::before{
+  content:"";
+  position:absolute;
+  inset:-26px -24px -22px -24px;
+  background:var(--paper);
+  opacity:.82;
+  filter:blur(18px);
+  z-index:-1;
 }
 
 .hello{
@@ -118,25 +129,6 @@ main{
 }
 .from{opacity:.7;}
 
-/* press-and-hold affordance */
-.hint{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  color:var(--trail);
-  transition:opacity .4s ease;
-}
-.hint .dot{
-  width:7px;height:7px;border-radius:50%;
-  background:currentColor;
-  animation:pulse 2.1s ease-in-out infinite;
-}
-.hint .dot.lit{animation:none;}
-@keyframes pulse{
-  0%,100%{opacity:.25;transform:scale(.8);}
-  50%{opacity:1;transform:scale(1.15);}
-}
-
 .reveal{opacity:0;transform:translateY(12px);}
 .in{
   opacity:1;transform:none;
@@ -145,7 +137,6 @@ main{
 
 @media (prefers-reduced-motion:reduce){
   .reveal{opacity:1;transform:none;transition:none;}
-  .hint .dot{animation:none;opacity:.7;}
 }
 @media (min-width:700px){
   main{padding-left:60px;padding-right:60px;}
