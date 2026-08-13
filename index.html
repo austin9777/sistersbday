@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Two sheets &mdash; 24</title>
+<meta name="theme-color" content="#EFE7DA">
+<style>
+  :root{
+    --paper:#EFE7DA;
+    --pink:#FF48B0;
+    --blue:#0078BF;
+    --overprint:#3C2E63;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--paper);
+    color:var(--overprint);
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+  }
+  .card{width:100%;max-width:420px;}
+  .kicker{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    opacity:.75;
+  }
+  h1{
+    font-size:clamp(2.5rem,13vw,4rem);
+    font-weight:800;
+    letter-spacing:-.045em;
+    text-transform:lowercase;
+    line-height:.9;
+    margin:18px 0 28px;
+  }
+  h1 em{font-style:normal;color:var(--pink);}
+  h1 i{font-style:normal;color:var(--blue);}
+  .links{display:flex;flex-direction:column;gap:12px;}
+  .links a{
+    display:block;
+    padding:18px 20px;
+    border:2px solid currentColor;
+    text-decoration:none;
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+  }
+  .links a:first-child{color:var(--pink);}
+  .links a:last-child{color:var(--blue);}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="kicker">Edition of two &middot; 2026</div>
+  <h1><em>sophia</em><br><i>olivia</i></h1>
+  <div class="links">
+    <a href="sophia/">Sophia&rsquo;s sheet &rarr;</a>
+    <a href="olivia/">Olivia&rsquo;s sheet &rarr;</a>
+  </div>
+</div>
+</body>
+</html>

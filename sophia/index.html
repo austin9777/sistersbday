@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sophia &mdash; 24</title>
+<meta name="theme-color" content="#EFE7DA">
+<style>
+  :root{
+    --paper:#EFE7DA;
+    --ink-a:#FF48B0;   /* riso fluorescent pink */
+    --ink-b:#0078BF;   /* riso medium blue */
+    --lead:#FF48B0;
+    --trail:#0078BF;
+    --overprint:#3C2E63;
+    --display:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html,body{height:100%;}
+  body{
+    background:var(--paper);
+    color:var(--overprint);
+    font-family:var(--display);
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  #plate{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+    z-index:0;
+  }
+  main{
+    position:relative;
+    z-index:1;
+    min-height:100%;
+    min-height:100svh;
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    padding:calc(env(safe-area-inset-top) + 28px) 24px calc(env(safe-area-inset-bottom) + 28px);
+  }
+
+  .sheet{
+    font-family:var(--mono);
+    font-size:11px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--overprint);
+    opacity:.75;
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .sheet b{font-weight:400;color:var(--lead);}
+
+  .middle{
+    padding:44px 0 12px;
+  }
+
+  .nameblock{
+    position:relative;
+    line-height:.82;
+  }
+  .nameblock span{
+    display:block;
+    font-size:clamp(3.75rem,21vw,9rem);
+    font-weight:800;
+    letter-spacing:-.055em;
+    text-transform:lowercase;
+    mix-blend-mode:multiply;
+  }
+  .layer-a{color:var(--lead);position:relative;}
+  .layer-b{
+    color:var(--trail);
+    position:absolute;
+    top:0;left:0;right:0;
+    transform:translate(var(--regx,26px),var(--regy,14px));
+  }
+  .no-anim .layer-b{transform:translate(3px,2px);}
+
+  .age{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.24em;
+    text-transform:uppercase;
+    margin-top:26px;
+    color:var(--overprint);
+  }
+
+  .note{
+    max-width:34ch;
+    margin-top:22px;
+    font-size:1.0625rem;
+    line-height:1.5;
+    font-weight:500;
+    color:var(--overprint);
+  }
+  .note p + p{margin-top:.85em;}
+
+  .foot{
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  .rule{height:2px;background:var(--lead);opacity:.55;mix-blend-mode:multiply;}
+  .pair{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:16px;
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.1em;
+    text-transform:uppercase;
+  }
+  .pair a{
+    color:var(--trail);
+    text-decoration:none;
+    border-bottom:2px solid currentColor;
+    padding-bottom:2px;
+  }
+  .pair a:focus-visible{outline:3px solid var(--overprint);outline-offset:4px;}
+  .from{opacity:.7;}
+
+  .reveal{opacity:0;transform:translateY(10px);}
+  .in{opacity:1;transform:none;transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.3,1);}
+
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1;transform:none;transition:none;}
+  }
+  @media (min-width:700px){
+    main{padding-left:60px;padding-right:60px;}
+    .note{font-size:1.1875rem;}
+  }
+</style>
+</head>
+<body>
+<canvas id="plate" aria-hidden="true"></canvas>
+
+<main>
+  <div class="sheet reveal">
+    <span>Sheet 1 of 2</span>
+    <b>Fluoro pink / blue</b>
+  </div>
+
+  <div class="middle">
+    <div class="nameblock reveal" aria-label="Sophia">
+      <span class="layer-b" aria-hidden="true">sophia</span>
+      <span class="layer-a">sophia</span>
+    </div>
+    <div class="age reveal">Twenty-four &middot; 2026</div>
+    <div class="note reveal">
+      <p>Twenty-four looks good on you. I know I don't say the sappy stuff out loud very often, so I built it instead.</p>
+      <p>This is one of two. Olivia has the other half &mdash; hold your phones next to each other and you'll see what I mean.</p>
+    </div>
+  </div>
+
+  <div class="foot reveal">
+    <div class="rule"></div>
+    <div class="pair">
+      <span class="from">From Austin</span>
+      <a href="../olivia/">Olivia's sheet &rarr;</a>
+    </div>
+  </div>
+</main>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var MIRROR = false;
+  var INK_LEAD = "#FF48B0", INK_TRAIL = "#0078BF";
+
+  /* deterministic seed shared by both sheets, so the two plates mirror each other */
+  function rng(seed){
+    var h = 2166136261;
+    for (var i=0;i<seed.length;i++){ h ^= seed.charCodeAt(i); h = Math.imul(h,16777619); }
+    return function(){
+      h += 0x6D2B79F5; var t = h;
+      t = Math.imul(t ^ (t>>>15), t|1);
+      t ^= t + Math.imul(t ^ (t>>>7), t|61);
+      return ((t ^ (t>>>14))>>>0)/4294967296;
+    };
+  }
+
+  var canvas = document.getElementById("plate");
+  var ctx = canvas.getContext("2d");
+  var W=0,H=0,DPR=1;
+  var plateA=document.createElement("canvas"), plateB=document.createElement("canvas");
+
+  function blob(c, color, seed, scale){
+    var r = rng(seed);
+    var g = c.getContext("2d");
+    g.clearRect(0,0,c.width,c.height);
+    g.save();
+    g.scale(DPR,DPR);
+    g.translate(W*0.5, H*0.46);
+    g.fillStyle = color;
+    var rings = 6;
+    for (var k=0;k<rings;k++){
+      var base = Math.min(W,H) * scale * (0.20 + k*0.098);
+      var a1=r()*2-1, a2=r()*2-1, a3=r()*2-1;
+      var p1=r()*6.28, p2=r()*6.28, p3=r()*6.28;
+      var spin = r()*6.28;
+      g.globalAlpha = 0.13 + (rings-k)*0.018;
+      g.beginPath();
+      for (var t=0;t<=360;t++){
+        var th = t*Math.PI/180;
+        var rad = base * (1
+          + 0.13*a1*Math.sin(2*th+p1)
+          + 0.09*a2*Math.sin(3*th+p2)
+          + 0.05*a3*Math.sin(5*th+p3));
+        var x = Math.cos(th+spin)*rad;
+        var y = Math.sin(th+spin)*rad*0.94;
+        if(t===0) g.moveTo(x,y); else g.lineTo(x,y);
+      }
+      g.closePath();
+      g.fill();
+    }
+    g.restore();
+  }
+
+  var grain=null;
+  function makeGrain(){
+    var gc=document.createElement("canvas");
+    gc.width=gc.height=140;
+    var g=gc.getContext("2d");
+    var img=g.createImageData(140,140), d=img.data;
+    for(var i=0;i<d.length;i+=4){
+      var v=Math.random()*255;
+      d[i]=d[i+1]=d[i+2]=v; d[i+3]=16;
+    }
+    g.putImageData(img,0,0);
+    grain=ctx.createPattern(gc,"repeat");
+  }
+
+  function size(){
+    DPR = Math.min(window.devicePixelRatio||1, 2);
+    W = window.innerWidth; H = window.innerHeight;
+    [canvas,plateA,plateB].forEach(function(c){
+      c.width = Math.round(W*DPR); c.height = Math.round(H*DPR);
+      c.style.width = W+"px"; c.style.height = H+"px";
+    });
+    /* identical seed on both sheets => mirrored artwork, swapped inks */
+    blob(plateA, INK_LEAD,  "sophia+olivia/plate-a", 1.02);
+    blob(plateB, INK_TRAIL, "sophia+olivia/plate-b", 0.94);
+    makeGrain();
+  }
+
+  var start = null;
+  function frame(ts){
+    if(start===null) start = ts;
+    var e = (ts-start)/1000;
+    /* plates land in register, then drift the way a riso press does */
+    var settle = reduce ? 1 : Math.min(1, e/2.4);
+    var ease = 1-Math.pow(1-settle,3);
+    var offx = (1-ease)*46 + Math.sin(e*0.42)*2.4;
+    var offy = (1-ease)*26 + Math.cos(e*0.33)*2.0;
+
+    ctx.setTransform(1,0,0,1,0,0);
+    ctx.globalCompositeOperation="source-over";
+    ctx.globalAlpha=1;
+    ctx.fillStyle="#EFE7DA";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.save();
+    if(MIRROR){ ctx.translate(canvas.width,0); ctx.scale(-1,1); }
+    ctx.globalCompositeOperation="multiply";
+    ctx.drawImage(plateA,0,0);
+    ctx.drawImage(plateB, offx*DPR, offy*DPR);
+    ctx.restore();
+
+    if(grain){
+      ctx.globalCompositeOperation="multiply";
+      ctx.fillStyle=grain;
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+    }
+
+    document.documentElement.style.setProperty("--regx", (offx*0.55).toFixed(2)+"px");
+    document.documentElement.style.setProperty("--regy", (offy*0.55).toFixed(2)+"px");
+
+    if(!reduce || e < 0.1) requestAnimationFrame(frame);
+  }
+
+  size();
+  window.addEventListener("resize", function(){ size(); });
+  if(reduce){ document.body.classList.add("no-anim"); }
+  requestAnimationFrame(frame);
+
+  /* content registers in after the plates */
+  var items = document.querySelectorAll(".reveal");
+  items.forEach(function(el,i){
+    setTimeout(function(){ el.classList.add("in"); }, reduce ? 0 : 420 + i*260);
+  });
+})();
+</script>
+</body>
+</html>
