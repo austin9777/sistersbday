@@ -44,7 +44,7 @@
       var a1=r()*2-1, a2=r()*2-1, a3=r()*2-1;
       var p1=r()*6.28, p2=r()*6.28, p3=r()*6.28;
       var spin = r()*6.28;
-      g.globalAlpha = 0.075 + (rings-k)*0.012;
+      g.globalAlpha = 0.13 + (rings-k)*0.018;
       g.beginPath();
       for (var t=0;t<=360;t++){
         var th = t*Math.PI/180;
@@ -69,7 +69,7 @@
     var img = g.createImageData(140,140), d = img.data;
     for(var i=0;i<d.length;i+=4){
       var v = Math.random()*255;
-      d[i]=d[i+1]=d[i+2]=v; d[i+3]=11;
+      d[i]=d[i+1]=d[i+2]=v; d[i+3]=16;
     }
     g.putImageData(img,0,0);
     grain = ctx.createPattern(gc,"repeat");

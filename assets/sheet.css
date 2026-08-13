@@ -1,6 +1,6 @@
 :root{
   --paper:#EFE7DA;
-  --overprint:#3C2E63;
+  --overprint:#241542;
   --display:"Helvetica Neue",Helvetica,Arial,sans-serif;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --regx:0px;
@@ -82,17 +82,17 @@ main{
   opacity:.8;
 }
 
-/* the copy sits in an unprinted area of the sheet so the ink
-   never fights the words; feathered edges keep it off-grid */
+/* Artwork stays at full strength. The copy earns its contrast from a
+   tight paper-coloured halo hugging each letterform, so the ink still
+   reads between and around the words instead of being masked out. */
 .copy{position:relative;}
-.copy::before{
-  content:"";
-  position:absolute;
-  inset:-26px -24px -22px -24px;
-  background:var(--paper);
-  opacity:.82;
-  filter:blur(18px);
-  z-index:-1;
+.copy .hello,
+.copy .note{
+  text-shadow:
+    0 0 3px var(--paper),
+    0 0 7px var(--paper),
+    0 0 15px var(--paper),
+    0 0 15px var(--paper);
 }
 
 .hello{
@@ -102,7 +102,6 @@ main{
   letter-spacing:-.02em;
   line-height:1.15;
   color:var(--lead);
-  mix-blend-mode:multiply;
 }
 
 .note{
@@ -110,7 +109,7 @@ main{
   margin-top:18px;
   font-size:1.0625rem;
   line-height:1.52;
-  font-weight:500;
+  font-weight:600;
 }
 .note p + p{margin-top:.9em;}
 .note em{font-style:normal;font-weight:700;color:var(--trail);}
